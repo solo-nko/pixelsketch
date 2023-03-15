@@ -1,7 +1,10 @@
 var numOfPieces = 5 * 5;
 var canvas = document.querySelector("#sketch-sect");
 var pieceColor = "#D04343";
+var canvasColor = "#F0F8FF";
 var canvasPieces = new Array();
+//buttons
+var btnClear = document.querySelector("#btn-clear");
 function retrieveColor(color) {
     if (color === void 0) { color = pieceColor; }
     return color;
@@ -19,6 +22,10 @@ function setCanvas(num) {
         });
     });
 }
-function setColor() {
+function clearCanvas() {
+    canvasPieces.forEach(function (element) {
+        element.style["background-color"] = canvasColor;
+    });
 }
 setCanvas();
+btnClear === null || btnClear === void 0 ? void 0 : btnClear.addEventListener("click", clearCanvas);
