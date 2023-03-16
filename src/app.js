@@ -11,7 +11,6 @@ var canvasSize = 5;
 function changePieceColor() {
     pieceColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value;
 }
-//meh.  i need to rethink this approach.
 function drawPieces(item) {
     if (pieceColor != undefined) {
         item.style.backgroundColor = pieceColor;
@@ -35,7 +34,7 @@ function setCanvas(num) {
     canvasPieces.forEach(function (element) {
         element.className = "gridPiece";
         canvas === null || canvas === void 0 ? void 0 : canvas.appendChild(element);
-        element.addEventListener("click", function () {
+        element.addEventListener("mousedown", function () {
             drawPieces(element);
         });
     });
@@ -64,7 +63,7 @@ function resizeSketchArea() {
     setCanvas(canvasSize);
 }
 setCanvas();
-btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.addEventListener("change", changePieceColor);
+btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.addEventListener("input", changePieceColor);
 btnClear === null || btnClear === void 0 ? void 0 : btnClear.addEventListener("click", clearCanvas);
 sketchScale === null || sketchScale === void 0 ? void 0 : sketchScale.addEventListener("input", resizeLabel);
 sketchScale === null || sketchScale === void 0 ? void 0 : sketchScale.addEventListener("change", resizeSketchArea); //the reason why I went with the change event instead of input was for performance concerns. I would guess it's a reasonably simple matter to change some text, but constantly resizing the grid might be more taxing, and it visually makes no difference either way.
