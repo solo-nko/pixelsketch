@@ -78,8 +78,9 @@ input {
 #sketch-sect {
 	grid-area: area;
 	padding: 5px;
-	width: 450px;
-	height: 450px;
+	aspect-ratio: 1/1;
+	min-width: 250px;
+	min-height: 250px;
 	box-shadow: var(--accentColor2)  inset 0 0 5px 0;
 }
 
@@ -102,7 +103,16 @@ footer {
 #footer-inner {
 	display: flex;
 	justify-content: space-between;
-	padding: 1rem;
+	padding: 0.5rem;
 	width: 100%;
 	max-width: 700px;
+}
+
+/* hidden for now until i can work on it */
+#btn-darkmode {
+	visibility: hidden;
+}
+
+#ghub-norm img {
+	height: 100%;
 }
