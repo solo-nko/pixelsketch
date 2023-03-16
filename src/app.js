@@ -1,5 +1,5 @@
 var numOfPieces = 5 * 5;
-var canvas = document.querySelector("#sketch-sect");
+var canvas = document.querySelector("#sketch-area");
 //buttons and inputs
 var btnPieceColor = document.querySelector("#btn-color");
 var btnCanvasColor = document.querySelector("#btn-canvas-color");

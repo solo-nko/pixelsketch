@@ -1,5 +1,5 @@
 const numOfPieces:number = 5*5;
-const canvas:HTMLElement|null = document.querySelector("#sketch-sect");
+const canvas:HTMLElement|null = document.querySelector("#sketch-area");
 
 
 //buttons and inputs
