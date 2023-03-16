@@ -14,9 +14,15 @@ function retrieveColor(color = pieceColor):string
 	return color;
 }
 
-function changeColor():void
+//meh.  i need to rethink this approach.
+function drawPieces(item:HTMLElement) 
 {
-
+	item.style.backgroundColor = pieceColor;
+	/* canvasPieces.forEach(element => {
+		element.addEventListener("mouseover", function () {
+			element.style.backgroundColor = pieceColor;
+		})
+	}) */
 }
 
 function setCanvas(num = canvasSize):void 
@@ -28,13 +34,12 @@ function setCanvas(num = canvasSize):void
 	for (let i = 0; i < (num*num); i++) {
 		canvasPieces.push(document.createElement("div"));
 	}
-	canvasPieces.forEach(element => {
+	/* canvasPieces.forEach(element => {
 		element.className = "gridPiece";
 		canvas?.appendChild(element);
-		element.addEventListener("click", function():void {
-			element.style["background-color"] = retrieveColor();
-		});
-	});
+		element.addEventListener("click", function() {
+			drawPieces(element)});
+	}); */
 }
 
 function clearCanvas():void
@@ -70,4 +75,4 @@ setCanvas();
 
 btnClear?.addEventListener("click", clearCanvas);
 sketchScale?.addEventListener("input", resizeLabel);
-sketchScale?.addEventListener("change", resizeSketchArea);
+sketchScale?.addEventListener("change", resizeSketchArea);//the reason why I went with the change event instead of input was for performance concerns. I would guess it's a reasonably simple matter to change some text, but constantly resizing the grid might be more taxing, and it visually makes no difference either way.

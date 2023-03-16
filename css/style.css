@@ -1,10 +1,13 @@
-section,
-footer {
-	border: 1px dashed blue;
+section, 
+input {
+	border: 1px dashed var(--accentColor2);
 }
 
 :root {
-	--backgroundColor: rgb(245, 245, 220);
+	--textColor: #241e15;
+	--primaryColor: #f5f5dc;
+	--accentColor1: #C2E0F2;
+	--accentColor2: #7C96A6;
 }
 
 html {
@@ -13,13 +16,17 @@ html {
 
 .style-text {
 	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+	color: var(--textColor);
 }
 
 body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	padding-top: 1rem;
 	padding-left: 1rem;
 	padding-right: 1rem;
-	background-color: beige;
+	background-color: var(--primaryColor);
 }
 
 main {
@@ -30,6 +37,7 @@ main {
 	gap: 1rem;
 	grid-template-columns: 1fr 3fr;
 	grid-template-rows: 1fr 3fr;
+	max-width: 800px;
 }
 
 #intro-sect {
@@ -43,6 +51,27 @@ h1 {
 
 #option-sect {
 	grid-area: opt;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+	padding: 1rem;
+	max-width: 200px;
+}
+
+input {
+	width: 100%;
+}
+
+#option-sect label {
+	display: block;
+	text-align: center;
+}
+
+#btn-color {
+	background-color: #F5FF55;
+	border-radius: 50%;
+	padding: 5px;
 }
 
 #sketch-sect {
@@ -50,12 +79,22 @@ h1 {
 	display: grid;
 	justify-self: center;
 	background-color: #f0f8ff;
-	width: 400px;
-	height: 400px;
+	width: 450px;
+	height: 450px;
 }
 
 footer {
+	width: 100%;
 	display: flex;
-	margin-top: 1rem;
 	justify-content: center;
+	margin-top: 1rem;
+	background-color: var(--accentColor1);
+}
+
+#footer2 {
+	display: flex;
+	justify-content: space-between;
+	padding: 1rem;
+	width: 100%;
+	max-width: 700px;
 }
