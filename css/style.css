@@ -69,7 +69,8 @@ input {
 	text-align: center;
 }
 
-#btn-color {
+#btn-color,
+#btn-canvas-color {
 	background-color: var(--primaryColor);
 	border-radius: 50%;
 	padding: 5px;
