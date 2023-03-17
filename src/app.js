@@ -58,10 +58,19 @@ function setCanvas(num) {
         
         The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence if buttons > 0), and if one is, it calls drawPieces to color in the event.
         */
-        element.addEventListener("mouseover", function (event) {
+        /* element.addEventListener("mouseover", function(event) {
             if (event.buttons > 0) {
                 drawPieces(element);
-            }
+            }}); */
+        element.addEventListener("mousedown", function (event) {
+            drawPieces(element);
+            canvasPieces.forEach(function (element2) {
+                element2.addEventListener("mouseenter", function (event) {
+                    if (event.buttons > 0) {
+                        drawPieces(element2);
+                    }
+                });
+            });
         });
     });
 }
