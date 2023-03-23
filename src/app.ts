@@ -12,6 +12,7 @@ let canvasColor:string|undefined = btnCanvasColor?.value; //retrieve user-define
 
 let canvasPieces:HTMLElement[] = new Array(); //create an array to store the div elements in
 let canvasSize:number = 5; //default size of the canvas, 5x5 or 25 squares
+let canvasClick:boolean = false;
 
 /**
  * Retrieves the current user-defined piece color.
@@ -69,18 +70,11 @@ function setCanvas(num = canvasSize):void
 		
 		The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence "if buttons > 0"), and if one is, it calls drawPieces to color in the div.
 		*/
-		element.addEventListener("mousedown", function(event){
-			drawPieces(element);
-			canvasPieces.forEach(element2 => {
-				element2.addEventListener("mouseenter", function(event){
-					if (event.buttons>0)
-					{
-						drawPieces(element2);
-					}
-				})
-			})
+		element.addEventListener("mouseenter", function(event){
+			if (canvasClick === true){
+				drawPieces(element);
+			}
 		});
-		
 	});
 }
 
@@ -131,7 +125,12 @@ setCanvas();
 	})
 }) */
 
-
+canvas?.addEventListener("mousedown", function(){
+	canvasClick = true;
+});
+document?.addEventListener("mouseup", function(){
+	canvasClick = false;
+});
 btnPieceColor?.addEventListener("input", changePieceColor);
 btnCanvasColor?.addEventListener("input", changeCanvasColor);
 btnClear?.addEventListener("click", clearCanvas);
