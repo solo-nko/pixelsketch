@@ -54,25 +54,21 @@ function drawPieces(item:HTMLElement)
  * @param num The size of the canvas as expressed in length or width (the canvas will have a square aspect ratio so it doesn't matter which).
  */
 function setCanvas(num = canvasSize):void 
-{
+{ //assuming the canvas didn't come back null, we override the grid size using inline CSS.
 	if(canvas != null) {
 		canvas.style.gridTemplateColumns = `repeat(${num}, 1fr)`;
 		canvas.style.gridTemplateRows = `repeat(${num}, 1fr)`;
-	}
+	} //then, we add each grid square to the canvasPieces array, for the purpose of running an array function on them in a sec
 	for (let i = 0; i < (num*num); i++) {
 		canvasPieces.push(document.createElement("div"));
-	}
+	} //the aforementioned array function goes through canvasPieces and assigns the class "gridPiece" to each grid square div, and then adds it to the DOM.
 	canvasPieces.forEach(element => {
 		element.className = "gridPiece";
 		canvas?.appendChild(element);
-		/* the following code adds a mouseover event listener to each gridPiece div. this calls an anonymous callback functions which receives the event (a MouseEvent of type "mouseover") as its argument.
+		/* the following code adds a mouseover event listener to each gridPiece div. this calls an anonymous callback function which receives the event (a MouseEvent of type "mouseover") as its argument.
 		
-		The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence if buttons > 0), and if one is, it calls drawPieces to color in the event.
+		The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence "if buttons > 0"), and if one is, it calls drawPieces to color in the div.
 		*/
- 		/* element.addEventListener("mouseover", function(event) { 
-			if (event.buttons > 0) {
-				drawPieces(element);
-			}}); */
 		element.addEventListener("mousedown", function(event){
 			drawPieces(element);
 			canvasPieces.forEach(element2 => {
@@ -99,7 +95,7 @@ function clearCanvas():void
 }
 
 /**
- * Rewrites the "Size:" label on the page as the user adjusts the slider. It does this by retrieving the current label as a string, modifying it, sending it back to the DOM element. Also modifies the actual canvasSize value accordingly.
+ * Rewrites the "Size:" label on the page as the user adjusts the slider. It does this by retrieving the current label as a string, modifying it, and sending it back to the DOM element. Also modifies the actual canvasSize value accordingly.
  */
 function resizeLabel():void {
 	const sizeString:string|undefined = sketchScale?.value;

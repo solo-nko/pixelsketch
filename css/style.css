@@ -49,7 +49,8 @@ h1 {
 	grid-area: opt;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	place-content: center;
+	place-items: center;
 	justify-content: space-around;
 	padding: 1rem;
 	max-width: 200px;
