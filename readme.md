@@ -16,7 +16,7 @@ This project is built in HTML, CSS and JavaScript. The JavaScript was written al
 
 ## Things I'd like to do:
 
-- Allow clicking and dragging to paint
+- ~~Allow clicking and dragging to paint~~ Done!
 - Implement 'default' button
 - Implement eraser mode
 - Add dark mode
