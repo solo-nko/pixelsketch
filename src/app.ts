@@ -66,12 +66,12 @@ function setCanvas(num = canvasSize):void
 	canvasPieces.forEach(element => {
 		element.className = "gridPiece";
 		canvas?.appendChild(element);
-		/* the following code adds a mouseover event listener to each gridPiece div. this calls an anonymous callback function which receives the event (a MouseEvent of type "mouseover") as its argument.
-		
-		The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence "if buttons > 0"), and if one is, it calls drawPieces to color in the div.
-		*/
+		element.addEventListener("mousedown", function(event){
+			event.preventDefault(); //this line prevents the browser from treating the gridpieces as draggable objects, which was causing the page to function unreliably because when you clicked to draw, the browser would sometimes treat this as a drag n' drop action and interfere.
+			drawPieces(element);
+		})
 		element.addEventListener("mouseenter", function(event){
-			if (canvasClick === true){
+			if (event.buttons > 0){
 				drawPieces(element);
 			}
 		});
@@ -117,20 +117,7 @@ function resizeSketchArea()
 
 setCanvas();
 
-/* canvas?.addEventListener("mousedown", function(){
-	canvasPieces.forEach(gridPiece => {
-		gridPiece.addEventListener("mouseover", function(){
-			drawPieces(gridPiece);
-		})
-	})
-}) */
 
-canvas?.addEventListener("mousedown", function(){
-	canvasClick = true;
-});
-document?.addEventListener("mouseup", function(){
-	canvasClick = false;
-});
 btnPieceColor?.addEventListener("input", changePieceColor);
 btnCanvasColor?.addEventListener("input", changeCanvasColor);
 btnClear?.addEventListener("click", clearCanvas);

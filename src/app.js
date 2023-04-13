@@ -59,8 +59,13 @@ function setCanvas(num) {
         
         The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence "if buttons > 0"), and if one is, it calls drawPieces to color in the div.
         */
+        element.addEventListener("mousedown", function (event) {
+            event.preventDefault();
+            drawPieces(element);
+        });
         element.addEventListener("mouseenter", function (event) {
-            if (canvasClick === true) {
+            if (event.buttons > 0) {
+                //console.log("ping");
                 drawPieces(element);
             }
         });
@@ -99,19 +104,6 @@ function resizeSketchArea() {
     setCanvas(canvasSize);
 }
 setCanvas();
-/* canvas?.addEventListener("mousedown", function(){
-    canvasPieces.forEach(gridPiece => {
-        gridPiece.addEventListener("mouseover", function(){
-            drawPieces(gridPiece);
-        })
-    })
-}) */
-canvas === null || canvas === void 0 ? void 0 : canvas.addEventListener("mousedown", function () {
-    canvasClick = true;
-});
-document === null || document === void 0 ? void 0 : document.addEventListener("mouseup", function () {
-    canvasClick = false;
-});
 btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.addEventListener("input", changePieceColor);
 btnCanvasColor === null || btnCanvasColor === void 0 ? void 0 : btnCanvasColor.addEventListener("input", changeCanvasColor);
 btnClear === null || btnClear === void 0 ? void 0 : btnClear.addEventListener("click", clearCanvas);
