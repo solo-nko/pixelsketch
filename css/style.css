@@ -1,8 +1,8 @@
 :root {
-	--textColor: #241e15;
-	--primaryColor: #f5f5dc;
-	--accentColor1: #C2E0F2;
-	--accentColor2: #7C96A6;
+	--textColor: rgb(36, 30, 21);
+	--primaryColor: rgb(245, 245, 220);
+	--accentColor1: rgb(194, 224, 242);
+	--accentColor2: rgb(124, 150, 166);
 	--testColor: #D04343
 }
 
@@ -66,9 +66,7 @@ input {
 	text-align: center;
 }
 
-#btn-color,
-#btn-canvas-color,
-#btn-clear {
+.opt-btn {
 	background-color: var(--primaryColor);
 	border: var(--accentColor2) 1px solid;
 	border-radius: 20%;
@@ -88,7 +86,7 @@ input {
 #sketch-area {
 	display: grid;
 	justify-self: center;
-	background-color: #f0f8ff;
+	background-color: rgb(240, 248, 255);
 	height: 100%;
 	width: 100%;
 }
