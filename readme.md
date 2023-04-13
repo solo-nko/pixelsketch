@@ -14,10 +14,14 @@ As an exercise in TypeScript, JavaScript and CSS Grid.
 
 This project is built in HTML, CSS and JavaScript. The JavaScript was written almost entirely in TypeScript.
 
+## Known Issues
+
+- Canvas doesn't change color correctly with eraser. This is due to a discrepancy in how the program handles color values. The HTML color picker input element prefers to use hexadecimal, whilst the JS DOM prefers to retrieve the color as an RGB value. Figuring out how to reliably convert between these two has been a headache.
+
 ## Things I'd like to do:
 
 - ~~Allow clicking and dragging to paint~~ Done!
 - Implement 'default' button
-- Implement eraser mode
+- Implement eraser mode (In progress)
 - Add dark mode
 - Export to image or vector
