@@ -22,6 +22,6 @@ This project is built in HTML, CSS and JavaScript. The JavaScript was written al
 
 - ~~Allow clicking and dragging to paint~~ Done!
 - Implement 'default' button
-- Implement eraser mode (In progress)
+- ~~Implement eraser mode~~ Done!
 - Add dark mode
 - Export to image or vector

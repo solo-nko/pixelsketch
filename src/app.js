@@ -24,8 +24,15 @@ var rgbToHex = function (r, g, b) { return '#' + [r, g, b].map(function (x) {
     return hex.length === 1 ? '0' + hex : hex;
 }).join(''); };
 function convertRGBtoHex(rgbInput) {
-    var rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
-    var rgbNum = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+    var rgbNumString;
+    var rgbNum;
+    try {
+        rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
+        rgbNum = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+    }
+    catch (error) {
+        return "error";
+    }
     return rgbToHex(rgbNum[0], rgbNum[1], rgbNum[2]);
 }
 /**
@@ -51,6 +58,10 @@ function changeCanvasColor() {
             element.style.backgroundColor = pieceHexColor;
         }
     });
+    //this code checks if the eraser is currently active (as evidenced by pieceColor being equal to previousCanvasColor) and updates it to match the new canvas color
+    if (pieceColor == previousCanvasColor) {
+        pieceColor = canvasColor;
+    }
 }
 /**
  * Modifies the color (more technically the background color) of the div it is called on

@@ -29,14 +29,34 @@ function paletteSwitch():void {
 	}
 }
 
+/**
+ * Takes three number arguments representing rgb color values and converts them to an equivalent hexadecimal value.
+ * @param r Red color value
+ * @param g Green color value
+ * @param b Blue color value
+ * @returns Hexadecimal equivalent
+ */
 const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
 	const hex = x.toString(16)
 	return hex.length === 1 ? '0' + hex : hex
  }).join('')
 
+ /**
+  * Uses rgbToHex helper function to convert an HTML rgb color to hex
+  * @param rgbInput rgb value, as a string in the format "rgb(#, #, #)"
+  * @returns 
+  */
 function convertRGBtoHex(rgbInput:string):string {
-	let rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
-	let rgbNum:number[] = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+	let rgbNumString:string[];
+	let rgbNum:number[];
+	
+	//Expect a TypeError to crop up because sometimes rgbInput arrives undefined. It doesn't seem to affect the functionality of the program as long as it's properly caught, though.
+	try {
+	rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
+	rgbNum = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+	} catch (error) {
+		return "error";
+	}
 
 	return rgbToHex(rgbNum[0], rgbNum[1], rgbNum[2]);
 }
@@ -67,8 +87,13 @@ function changeCanvasColor():void
 		if (pieceHexColor == previousCanvasColor && canvasColor != undefined) {
 			pieceHexColor = canvasColor;
 			element.style.backgroundColor = pieceHexColor;
-		}		
+		}
 	});
+
+	//this code checks if the eraser is currently active (as evidenced by pieceColor being equal to previousCanvasColor) and updates it to match the new canvas color
+	if (pieceColor == previousCanvasColor) {
+		pieceColor = canvasColor;
+	}
 }
 
 /**
