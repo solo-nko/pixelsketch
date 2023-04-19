@@ -16,7 +16,7 @@ This project is built in HTML, CSS and JavaScript. The JavaScript was written al
 
 ## Known Issues
 
-- Canvas doesn't change color correctly with eraser. This is due to a discrepancy in how the program handles color values. The HTML color picker input element prefers to use hexadecimal, whilst the JS DOM prefers to retrieve the color as an RGB value. Figuring out how to reliably convert between these two has been a headache.
+None at the moment.
 
 ## Things I'd like to do:
 
