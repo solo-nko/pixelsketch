@@ -1,25 +1,73 @@
 const canvas:HTMLElement|null = document.querySelector("#sketch-area"); //TypeScript requires you to declare all technically possible types. Even if you know that the page is set up to only deliver HTMLElements, type safety dictates that this must also be declared potentially null, in the event that the query selector somehow fails to retrieve the element.
 
+type element = HTMLElement|null;
+type inputElement = HTMLInputElement|null;
+
 //buttons and inputs
-const btnPieceColor:HTMLInputElement|null = document.querySelector("#btn-color");
-const btnCanvasColor:HTMLInputElement|null = document.querySelector("#btn-canvas-color");
-const btnClear:HTMLElement|null = document.querySelector("#btn-clear"); 
-const sketchScale:HTMLInputElement|null = document.querySelector("#sketch-scale");
+const btnPieceColor:inputElement = document.querySelector("#btn-color");
+const btnCanvasColor:inputElement = document.querySelector("#btn-canvas-color");
+const btnClear:element = document.querySelector("#btn-clear");
+const btnEraser:element = document.querySelector("#btn-eraser");
+const sketchScale:inputElement = document.querySelector("#sketch-scale");
 
+let primaryColor:string = getComputedStyle(document.documentElement,null).getPropertyValue('--primaryColor').trim(); //trim is because getComputedStyle apparently also captures whitespace.
+let accentColor2:string = getComputedStyle(document.documentElement,null).getPropertyValue('--accentColor2').trim();
 
-let pieceColor:string|undefined = btnPieceColor?.value; //retrieve user-defined color
+let storageColor:string|undefined = btnPieceColor?.value; //retrieve user-defined sketch color
+let pieceColor:string|undefined = storageColor;
 let canvasColor:string|undefined = btnCanvasColor?.value; //retrieve user-defined canvas color
+
 
 let canvasPieces:HTMLElement[] = new Array(); //create an array to store the div elements in
 let canvasSize:number = 5; //default size of the canvas, 5x5 or 25 squares
 let canvasClick:boolean = false;
+
+//just a quick and dirty void method to change button colors. I may later expand it to use with dark mode
+function paletteSwitch():void {
+	if (btnEraser != null) {
+	btnEraser.style.backgroundColor = primaryColor;
+	}
+}
+
+/**
+ * Takes three number arguments representing rgb color values and converts them to an equivalent hexadecimal value.
+ * @param r Red color value
+ * @param g Green color value
+ * @param b Blue color value
+ * @returns Hexadecimal equivalent
+ */
+const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+	const hex = x.toString(16)
+	return hex.length === 1 ? '0' + hex : hex
+ }).join('')
+
+ /**
+  * Uses rgbToHex helper function to convert an HTML rgb color to hex
+  * @param rgbInput rgb value, as a string in the format "rgb(#, #, #)"
+  * @returns 
+  */
+function convertRGBtoHex(rgbInput:string):string {
+	let rgbNumString:string[];
+	let rgbNum:number[];
+	
+	//Expect a TypeError to crop up because sometimes rgbInput arrives undefined. It doesn't seem to affect the functionality of the program as long as it's properly caught, though.
+	try {
+	rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
+	rgbNum = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+	} catch (error) {
+		return "error";
+	}
+
+	return rgbToHex(rgbNum[0], rgbNum[1], rgbNum[2]);
+}
 
 /**
  * Retrieves the current user-defined piece color.
  */
 function changePieceColor():void
 {
-	pieceColor = btnPieceColor?.value;
+	storageColor = btnPieceColor?.value;
+	pieceColor = storageColor;
 }
 
 /**
@@ -27,10 +75,24 @@ function changePieceColor():void
  */
 function changeCanvasColor():void
 {
+	let previousCanvasColor = canvasColor;
 	canvasColor = btnCanvasColor?.value;
-	if (canvas != null)
+	if (canvas != null && canvasColor != undefined)
 	{
-		canvas.style["background-color"] = canvasColor;	
+		canvas.style.backgroundColor = canvasColor;	
+	}
+
+	canvasPieces.forEach(element => {
+		let pieceHexColor = convertRGBtoHex(element.style.backgroundColor);
+		if (pieceHexColor == previousCanvasColor && canvasColor != undefined) {
+			pieceHexColor = canvasColor;
+			element.style.backgroundColor = pieceHexColor;
+		}
+	});
+
+	//this code checks if the eraser is currently active (as evidenced by pieceColor being equal to previousCanvasColor) and updates it to match the new canvas color
+	if (pieceColor == previousCanvasColor) {
+		pieceColor = canvasColor;
 	}
 }
 
@@ -43,11 +105,6 @@ function drawPieces(item:HTMLElement)
 	if (pieceColor != undefined) {
 		item.style.backgroundColor = pieceColor;
 	};
-	/* canvasPieces.forEach(element => {
-		element.addEventListener("mouseover", function () {
-			element.style.backgroundColor = pieceColor;
-		})
-	}) */
 }
 
 /**
@@ -84,7 +141,9 @@ function setCanvas(num = canvasSize):void
 function clearCanvas():void
 {
 	canvasPieces.forEach(element => {
-		element.style["background-color"] = canvasColor;
+		if (canvasColor != undefined) {
+			element.style.backgroundColor = canvasColor;
+		}
 	})
 }
 
@@ -103,7 +162,7 @@ function resizeLabel():void {
 /**
  * Resizes the sketch area. Before doing so, it clears out the canvas, and then deletes each of the grid squares. It then calls setCanvas() to rebuild them according to the new size.
  */
-function resizeSketchArea()
+function resizeSketchArea():void
 {
 	clearCanvas();
 	canvasPieces.forEach(element => {
@@ -115,11 +174,36 @@ function resizeSketchArea()
 	setCanvas(canvasSize);
 }
 
+/**
+ * Sets the cursor to "erase" squares by matching their color to the canvas.
+ */
+function eraserMode():void
+{
+	if (btnEraser != null) {
+		if (btnEraser.style.backgroundColor == primaryColor) {
+			btnEraser.style.backgroundColor = accentColor2;
+		} else {
+			btnEraser.style.backgroundColor = primaryColor;
+		}
+	}	
+
+	switch (pieceColor) {
+		case canvasColor:
+			pieceColor = storageColor;
+			break;
+		case storageColor:
+			pieceColor = canvasColor;
+			break;			
+	}
+}
+
 setCanvas();
+paletteSwitch();
 
 
 btnPieceColor?.addEventListener("input", changePieceColor);
 btnCanvasColor?.addEventListener("input", changeCanvasColor);
+btnEraser?.addEventListener("click", eraserMode);
 btnClear?.addEventListener("click", clearCanvas);
 sketchScale?.addEventListener("input", resizeLabel);
 sketchScale?.addEventListener("change", resizeSketchArea);//the reason why I went with the change event instead of input was for performance concerns. I would guess it's a reasonably simple matter to change some text, but constantly resizing the grid might be more taxing, and it visually makes no difference either way.

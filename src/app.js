@@ -3,25 +3,64 @@ var canvas = document.querySelector("#sketch-area"); //TypeScript requires you t
 var btnPieceColor = document.querySelector("#btn-color");
 var btnCanvasColor = document.querySelector("#btn-canvas-color");
 var btnClear = document.querySelector("#btn-clear");
+var btnEraser = document.querySelector("#btn-eraser");
 var sketchScale = document.querySelector("#sketch-scale");
-var pieceColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value; //retrieve user-defined color
+var primaryColor = getComputedStyle(document.documentElement, null).getPropertyValue('--primaryColor').trim(); //trim is because getComputedStyle apparently also captures whitespace.
+var accentColor2 = getComputedStyle(document.documentElement, null).getPropertyValue('--accentColor2').trim();
+var storageColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value; //retrieve user-defined sketch color
+var pieceColor = storageColor;
 var canvasColor = btnCanvasColor === null || btnCanvasColor === void 0 ? void 0 : btnCanvasColor.value; //retrieve user-defined canvas color
 var canvasPieces = new Array(); //create an array to store the div elements in
 var canvasSize = 5; //default size of the canvas, 5x5 or 25 squares
 var canvasClick = false;
+//just a quick and dirty void method to change button colors. I may later expand it to use with dark mode
+function paletteSwitch() {
+    if (btnEraser != null) {
+        btnEraser.style.backgroundColor = primaryColor;
+    }
+}
+var rgbToHex = function (r, g, b) { return '#' + [r, g, b].map(function (x) {
+    var hex = x.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+}).join(''); };
+function convertRGBtoHex(rgbInput) {
+    var rgbNumString;
+    var rgbNum;
+    try {
+        rgbNumString = (rgbInput.split("(")[1].split(")")[0]).split(",");
+        rgbNum = [Number.parseInt(rgbNumString[0]), Number.parseInt(rgbNumString[1]), Number.parseInt(rgbNumString[2])];
+    }
+    catch (error) {
+        return "error";
+    }
+    return rgbToHex(rgbNum[0], rgbNum[1], rgbNum[2]);
+}
 /**
  * Retrieves the current user-defined piece color.
  */
 function changePieceColor() {
-    pieceColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value;
+    storageColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value;
+    pieceColor = storageColor;
 }
 /**
  * Retrieves the current user-defined canvas color and then modifies the canvas accordingly.
  */
 function changeCanvasColor() {
+    var previousCanvasColor = canvasColor;
     canvasColor = btnCanvasColor === null || btnCanvasColor === void 0 ? void 0 : btnCanvasColor.value;
-    if (canvas != null) {
-        canvas.style["background-color"] = canvasColor;
+    if (canvas != null && canvasColor != undefined) {
+        canvas.style.backgroundColor = canvasColor;
+    }
+    canvasPieces.forEach(function (element) {
+        var pieceHexColor = convertRGBtoHex(element.style.backgroundColor);
+        if (pieceHexColor == previousCanvasColor && canvasColor != undefined) {
+            pieceHexColor = canvasColor;
+            element.style.backgroundColor = pieceHexColor;
+        }
+    });
+    //this code checks if the eraser is currently active (as evidenced by pieceColor being equal to previousCanvasColor) and updates it to match the new canvas color
+    if (pieceColor == previousCanvasColor) {
+        pieceColor = canvasColor;
     }
 }
 /**
@@ -33,11 +72,6 @@ function drawPieces(item) {
         item.style.backgroundColor = pieceColor;
     }
     ;
-    /* canvasPieces.forEach(element => {
-        element.addEventListener("mouseover", function () {
-            element.style.backgroundColor = pieceColor;
-        })
-    }) */
 }
 /**
  * Modifies CSS Grid rules to programmatically draw a grid of squares and set an HTML class and JS event handlers on each of them.
@@ -55,17 +89,12 @@ function setCanvas(num) {
     canvasPieces.forEach(function (element) {
         element.className = "gridPiece";
         canvas === null || canvas === void 0 ? void 0 : canvas.appendChild(element);
-        /* the following code adds a mouseover event listener to each gridPiece div. this calls an anonymous callback function which receives the event (a MouseEvent of type "mouseover") as its argument.
-        
-        The callback function checks if one of the mouse buttons are being pressed (each mouse button is assigned a non-zero number, hence "if buttons > 0"), and if one is, it calls drawPieces to color in the div.
-        */
         element.addEventListener("mousedown", function (event) {
-            event.preventDefault();
+            event.preventDefault(); //this line prevents the browser from treating the gridpieces as draggable objects, which was causing the page to function unreliably because when you clicked to draw, the browser would sometimes treat this as a drag n' drop action and interfere.
             drawPieces(element);
         });
         element.addEventListener("mouseenter", function (event) {
             if (event.buttons > 0) {
-                //console.log("ping");
                 drawPieces(element);
             }
         });
@@ -76,7 +105,9 @@ function setCanvas(num) {
  */
 function clearCanvas() {
     canvasPieces.forEach(function (element) {
-        element.style["background-color"] = canvasColor;
+        if (canvasColor != undefined) {
+            element.style.backgroundColor = canvasColor;
+        }
     });
 }
 /**
@@ -103,9 +134,32 @@ function resizeSketchArea() {
     }
     setCanvas(canvasSize);
 }
+/**
+ * Sets the cursor to "erase" squares by matching their color to the canvas.
+ */
+function eraserMode() {
+    if (btnEraser != null) {
+        if (btnEraser.style.backgroundColor == primaryColor) {
+            btnEraser.style.backgroundColor = accentColor2;
+        }
+        else {
+            btnEraser.style.backgroundColor = primaryColor;
+        }
+    }
+    switch (pieceColor) {
+        case canvasColor:
+            pieceColor = storageColor;
+            break;
+        case storageColor:
+            pieceColor = canvasColor;
+            break;
+    }
+}
 setCanvas();
+paletteSwitch();
 btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.addEventListener("input", changePieceColor);
 btnCanvasColor === null || btnCanvasColor === void 0 ? void 0 : btnCanvasColor.addEventListener("input", changeCanvasColor);
+btnEraser === null || btnEraser === void 0 ? void 0 : btnEraser.addEventListener("click", eraserMode);
 btnClear === null || btnClear === void 0 ? void 0 : btnClear.addEventListener("click", clearCanvas);
 sketchScale === null || sketchScale === void 0 ? void 0 : sketchScale.addEventListener("input", resizeLabel);
 sketchScale === null || sketchScale === void 0 ? void 0 : sketchScale.addEventListener("change", resizeSketchArea); //the reason why I went with the change event instead of input was for performance concerns. I would guess it's a reasonably simple matter to change some text, but constantly resizing the grid might be more taxing, and it visually makes no difference either way.
