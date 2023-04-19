@@ -13,7 +13,7 @@ const sketchScale:inputElement = document.querySelector("#sketch-scale");
 let primaryColor:string = getComputedStyle(document.documentElement,null).getPropertyValue('--primaryColor').trim(); //trim is because getComputedStyle apparently also captures whitespace.
 let accentColor2:string = getComputedStyle(document.documentElement,null).getPropertyValue('--accentColor2').trim();
 
-let storageColor:string|undefined = btnPieceColor?.value; //retrieve user-defined color
+let storageColor:string|undefined = btnPieceColor?.value; //retrieve user-defined sketch color
 let pieceColor:string|undefined = storageColor;
 let canvasColor:string|undefined = btnCanvasColor?.value; //retrieve user-defined canvas color
 
@@ -22,7 +22,7 @@ let canvasPieces:HTMLElement[] = new Array(); //create an array to store the div
 let canvasSize:number = 5; //default size of the canvas, 5x5 or 25 squares
 let canvasClick:boolean = false;
 
-//just a quick and dirty void method to change colors. I may later expand it to use with dark mode
+//just a quick and dirty void method to change button colors. I may later expand it to use with dark mode
 function paletteSwitch():void {
 	if (btnEraser != null) {
 	btnEraser.style.backgroundColor = primaryColor;
@@ -47,6 +47,7 @@ function convertRGBtoHex(rgbInput:string):string {
 function changePieceColor():void
 {
 	storageColor = btnPieceColor?.value;
+	pieceColor = storageColor;
 }
 
 /**
@@ -61,17 +62,13 @@ function changeCanvasColor():void
 		canvas.style.backgroundColor = canvasColor;	
 	}
 
-	if (pieceColor == previousCanvasColor)
-	{
-		pieceColor = canvasColor;
-		canvasPieces.forEach(element => {
-			let hexColor:string = convertRGBtoHex(element.style.backgroundColor);
-			if (hexColor == previousCanvasColor && canvasColor != undefined) {
-				hexColor = canvasColor;
-				element.style.backgroundColor = hexColor;
-			}
-		})
-	}
+	canvasPieces.forEach(element => {
+		let pieceHexColor = convertRGBtoHex(element.style.backgroundColor);
+		if (pieceHexColor == previousCanvasColor && canvasColor != undefined) {
+			pieceHexColor = canvasColor;
+			element.style.backgroundColor = pieceHexColor;
+		}		
+	});
 }
 
 /**
@@ -119,7 +116,9 @@ function setCanvas(num = canvasSize):void
 function clearCanvas():void
 {
 	canvasPieces.forEach(element => {
-		element.style["background-color"] = canvasColor;
+		if (canvasColor != undefined) {
+			element.style.backgroundColor = canvasColor;
+		}
 	})
 }
 

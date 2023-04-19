@@ -5,14 +5,15 @@ var btnCanvasColor = document.querySelector("#btn-canvas-color");
 var btnClear = document.querySelector("#btn-clear");
 var btnEraser = document.querySelector("#btn-eraser");
 var sketchScale = document.querySelector("#sketch-scale");
-var primaryColor = getComputedStyle(document.documentElement, null).getPropertyValue('--primaryColor').trim();
+var primaryColor = getComputedStyle(document.documentElement, null).getPropertyValue('--primaryColor').trim(); //trim is because getComputedStyle apparently also captures whitespace.
 var accentColor2 = getComputedStyle(document.documentElement, null).getPropertyValue('--accentColor2').trim();
-var storageColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value; //retrieve user-defined color
+var storageColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value; //retrieve user-defined sketch color
 var pieceColor = storageColor;
 var canvasColor = btnCanvasColor === null || btnCanvasColor === void 0 ? void 0 : btnCanvasColor.value; //retrieve user-defined canvas color
 var canvasPieces = new Array(); //create an array to store the div elements in
 var canvasSize = 5; //default size of the canvas, 5x5 or 25 squares
 var canvasClick = false;
+//just a quick and dirty void method to change button colors. I may later expand it to use with dark mode
 function paletteSwitch() {
     if (btnEraser != null) {
         btnEraser.style.backgroundColor = primaryColor;
@@ -32,6 +33,7 @@ function convertRGBtoHex(rgbInput) {
  */
 function changePieceColor() {
     storageColor = btnPieceColor === null || btnPieceColor === void 0 ? void 0 : btnPieceColor.value;
+    pieceColor = storageColor;
 }
 /**
  * Retrieves the current user-defined canvas color and then modifies the canvas accordingly.
@@ -42,16 +44,13 @@ function changeCanvasColor() {
     if (canvas != null && canvasColor != undefined) {
         canvas.style.backgroundColor = canvasColor;
     }
-    if (pieceColor == previousCanvasColor) {
-        pieceColor = canvasColor;
-        canvasPieces.forEach(function (element) {
-            var hexColor = convertRGBtoHex(element.style.backgroundColor);
-            if (hexColor == previousCanvasColor && canvasColor != undefined) {
-                hexColor = canvasColor;
-                element.style.backgroundColor = hexColor;
-            }
-        });
-    }
+    canvasPieces.forEach(function (element) {
+        var pieceHexColor = convertRGBtoHex(element.style.backgroundColor);
+        if (pieceHexColor == previousCanvasColor && canvasColor != undefined) {
+            pieceHexColor = canvasColor;
+            element.style.backgroundColor = pieceHexColor;
+        }
+    });
 }
 /**
  * Modifies the color (more technically the background color) of the div it is called on
@@ -95,7 +94,9 @@ function setCanvas(num) {
  */
 function clearCanvas() {
     canvasPieces.forEach(function (element) {
-        element.style["background-color"] = canvasColor;
+        if (canvasColor != undefined) {
+            element.style.backgroundColor = canvasColor;
+        }
     });
 }
 /**
